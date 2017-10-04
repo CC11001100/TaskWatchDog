@@ -1,0 +1,17 @@
+{
+	"watch_path": "./",
+	"notice_filehelper": true,
+	"notice_friends": [
+		{
+			"remark_name": "光头强"
+		},
+		{
+			"remark_name": "熊大"
+		},
+		{
+			"remark_name": "熊二"
+		}
+	],
+	"remove_old_msg": false,
+	"message_content_max_length": 1024
+}
