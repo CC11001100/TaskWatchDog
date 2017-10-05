@@ -47,6 +47,8 @@ class MyFileSystemEventHandler(FileSystemEventHandler):
         :param path:
         :return:
         """
+        if not path.endswith('msg.txt'):
+            return
         try:
             # 读取新消息的内容
             with open(path, encoding='UTF-8') as new_msg_file:
@@ -68,6 +70,24 @@ class MyFileSystemEventHandler(FileSystemEventHandler):
         except Exception as e:
             logging.warning(e)
 
+
+class WeiXinStatusCheck:
+    """
+    用于检查微信的登录状态，比如掉线的时候就退出啥的
+    """
+    @staticmethod
+    def watch_weixin_status():
+        while True:
+            try:
+                weixin_status = itchat.check_login()
+                if weixin_status != '200':
+                    logging.error('Wei Xin status exception %s' % weixin_status)
+                    sys.exit(-1)
+                else:
+                    time.sleep(60*10) # 每十分钟检查一次登录状态，差不多就得了太频繁了小心被封
+            except Exception as e:
+                logging.error(e)
+                sys.exit(-1)
 
 class WatchDog:
     """
@@ -105,11 +125,26 @@ class MessageSender:
 
     # 初始化微信相关的，这里会有一个需要登录的地方，登录的时候会阻塞住
     def init_itchat(self):
-        itchat.auto_login(hotReload=True, enableCmdQR=False)    # 没有GUI界面的情况下应该将这个置为True
+        try:
+            itchat.auto_login(hotReload=True, enableCmdQR=configuration['use_qrcode'])    # 没有GUI界面的情况下应该将这个置为True
+            logging.info('WeiXin login success.')
+        except ExpatError as e:
+            logging.error('Wei Xin status exception, open "https://wx2.qq.com/" try login for check.')
+            sys.exit(-1)
+        except Exception:
+            logging.error(e)
+            sys.exit(-1)
+
+        # 这里只是为了hold住会话不超时即可，所以启动一个线程让它一直阻塞着即可
         t1 = threading.Thread(target=itchat.run)
         t1.setDaemon(True)
-        t1.start()    # 这里只是为了hold住会话不超时即可，所以启动一个线程让它一直阻塞着即可
-        logging.info('WeiXin login success.')
+        t1.start()
+
+        # 启动一个线程一直监控着微信的状态
+        t2 = threading.Thread(target=WeiXinStatusCheck.watch_weixin_status)
+        t2.setDaemon(True)
+        t2.start()
+        logging.info('')
 
     # 初始化应该通知到的好友
     def init_notification_friends(self):
@@ -186,6 +221,7 @@ class ConfigurationLoader:
 
             config['remove_old_msg']
             config['message_content_max_length']
+            config['use_qrcode']
             return config
         except KeyError as e:
             logging.error('Error: in config file the key "%s" is not found or incorrect.' % e)
