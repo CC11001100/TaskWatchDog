@@ -11,14 +11,14 @@
 [TaskWatchDog.exe for Windows 10](http://www.foo.com)  
 下载配置文件：  
 [config.json](https://github.com/CC11001100/TaskWatchDog/blob/master/config.json)  
-将下载的可执行文件和配置文件放到同一个目录，双击可执行文件启动程序，程序启动时需要登录微信，会使用图片查看器打开一张二维码，扫描登录，启动成功后大概是这个样子：
-![](./img_for_readme/Windows登录成功截图.png)
+将下载的可执行文件和配置文件放到同一个目录，双击可执行文件启动程序，程序启动时需要登录微信，会使用图片查看器打开一张二维码，扫描登录，启动成功后大概是这个样子：  
+![](./img_for_readme/Windows登录成功截图.png)  
 测试程序是否能正常工作：  
-打开CMD，切换到存放上面程序的目录：
+打开CMD，切换到存放上面程序的目录：  
 ![](./img_for_readme/Windows检测_001.png)  
 在此目录下创建一个文件，并写点东西进去，记得文件的后缀得是以“msg.txt”结尾的：  
 ![](./img_for_readme/Windows检测_002.png)  
-打开刚才扫码登录的微信，“文件传输助手”已经收到了消息：
+打开刚才扫码登录的微信，“文件传输助手”已经收到了消息：  
 ![](./img_for_readme/Windows_消息发送成功.png)  
 
 如果程序运行出现问题，请阅读 自定义编译打包部分或给我发邮件[CC11001100@qq.com](mailto:CC11001100@qq.com)。
