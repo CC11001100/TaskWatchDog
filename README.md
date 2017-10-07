@@ -11,7 +11,7 @@
 单击此链接下载打包好的可执行文件：  
 [TaskWatchDog.exe for Windows 10](https://raw.githubusercontent.com/CC11001100/TaskWatchDog/master/dist/Windows/Windows%2010/TaskWatchDog.exe)  
 下载配置文件：  
-[config.json](https://github.com/CC11001100/TaskWatchDog/blob/master/config.json)  
+[config.json](https://raw.githubusercontent.com/CC11001100/TaskWatchDog/master/config.json)  
 将下载的可执行文件和配置文件放到同一个目录，双击可执行文件启动程序，程序启动时需要登录微信，会使用图片查看器打开一张二维码，扫描登录，启动成功后大概是这个样子：  
 ![](./img_for_readme/Windows登录成功截图.png)  
 测试程序是否能正常工作：  
@@ -28,7 +28,7 @@
 单击此链接下载打包好的可执行文件：  
 [TaskWatchDog for CentOS](https://raw.githubusercontent.com/CC11001100/TaskWatchDog/master/dist/Linux/CentOS/TaskWatchDog)  
 下载配置文件：  
-[config.json](https://raw.github.com/CC11001100/TaskWatchDog/blob/master/config.json)  
+[config.json](https://raw.githubusercontent.com/CC11001100/TaskWatchDog/master/config.json)  
 将config.json的use_shell_qrcode修改为2，如果感觉过宽的话就修改为true，修改后的config.json文件如下：  
 ```
 {
@@ -89,10 +89,8 @@ dist目录下的就是打包好的Linux下的可执行文件啦：
 如有问题，发邮件联系我[CC11001100@qq.com](mailto:CC11001100@qq.com)或提Issue。
 
 
-
 #### 多个微信号
-
-
+当有多个微信号的时候，拿一个小号做机器人，比如将机器人号和常用号互加好友，在机器人号设置常用号备注，notice_friends设置备注名字，扫码登录机器人号，可以一直挂着，通知到常用号，这样子才是比较酷的，不过微信号限制注册了，我也没那么多马甲，这个暂时不出演示文档了。
 
 
 ### 3. 配置详解
@@ -130,6 +128,12 @@ NOTE： 上述内容必须全部指定，程序启动的时候会对配置文件
 **use_shell_qrcode: &lt;boolean&gt;** 微信登录是要扫码的，这在Windows下当然木有问题，但是在Linux下没有GUI时就比较悲剧了，所以在没有GUI的情况下应该将此项设置为true，扫描字符二维码登录。如果将此项设置为true的话，可能会出现字符二维码过窄的情况，这时候将其设置为2即可，如果仍窄依次类推。  
 
 
-### 4. 新版计划
+### 4. 示例代码
+因为是使用文件系统黏在一起的，所以消息生产者可以是py、java、bash、ruby、php、c++、powershell....只要能够写文件就可以。  
+暂略，无非就是写个工具类将文本写入到指定目录下，文件名用时间戳或者UUID啥的保证每次不同即可，很一贼的。  
+有个坑：文件已经存在的情况下，w模式是先清空文件，再往文件中写内容，所以会触发两次修改事件并不是想象的一个创建事件、一个修改事件，而a模式只会触发一个修改事件，所以如果固定写入一个名字相同的文件的话，将remove_old_msg置为true。
+
+
+### 5. 新版计划
 - 加入多种消息格式支持（图片、文件、语音等等）  
 - 更多还没想好，反正估计又是挖坑不填....  
