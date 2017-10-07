@@ -2,8 +2,9 @@
 
 ### 1. TaskWatchDog是什么
 具体怎么来形容呢，它的出现是为了解决这样一类需求的：当你跑了一个很耗时的任务但是拿不准何时结束的时候，难道要傻傻的等在计算机前等它结束吗？所以我就在想能不能让它跑完了自己通知我一下呢，这样我就可以分身去做更有趣的事情啦，它跑完了会自己“回调”我的 :)  
-所以呢，这个小东西就是可以方便的将任务进度用微信通知到你。
+所以呢，这个小东西就是可以方便的将任务进度用微信通知到你。  
 
+原理就是会监控某个目录下的文件创建事件，把你需要发送的消息以文件的形式创建在此目录下，即可触发事件发送到微信。  
 
 ### 2. 如何使用
 #### 快速开始：Windows
@@ -21,10 +22,72 @@
 打开刚才扫码登录的微信，“文件传输助手”已经收到了消息：  
 ![](./img_for_readme/Windows_消息发送成功.png)  
 
-如果程序运行出现问题，请阅读 自定义编译打包部分或给我发邮件[CC11001100@qq.com](mailto:CC11001100@qq.com)。
+如果程序运行出现问题，请阅读 自定义编译打包部分或给我发邮件[CC11001100@qq.com](mailto:CC11001100@qq.com)或提Issue。。
 
 #### 快速开始：Linux
+单击此链接下载打包好的可执行文件：  
+[TaskWatchDog for CentOS](http://www.foo.com)  
+下载配置文件：  
+[config.json](https://github.com/CC11001100/TaskWatchDog/blob/master/config.json)  
+将config.json的use_shell_qrcode修改为2，如果感觉过宽的话就修改为true，修改后的config.json文件如下：  
+```
+{
+	"watch_path": "./",
+	"notice_filehelper": true,
+	"notice_friends": [],
+	"remove_old_msg": false,
+	"message_content_max_length": 1024,
+	"use_shell_qrcode": 2
+}
+```
+将下载的可执行文件和配置文件放到同一个目录，启动程序并扫码登录：  
+![](./img_for_readme/Linux_扫码登录.png)
+测试程序是否能正常工作：  
+`echo linux:haha >> 1.msg.txt`  
+打开扫码登录的微信，查收消息：  
+![](./img_for_readme/Linux_接收到消息.png)  
 
+如果程序运行出现问题，请阅读[源码安装](#源码安装)部分或给我发邮件[CC11001100@qq.com](mailto:CC11001100@qq.com)或提Issue。。
+
+#### 源码安装
+本软件使用python3编写，请先安装python3版本。  
+Redhat、CentOS系Linux可直接使用以下命令安装py3：  
+```
+sudo yum install epel-release
+sudo yum install python34
+```
+如果打包好的没有适合自己系统的或者是无法运行的，需要下载源码安装：  
+```
+wget https://raw.githubusercontent.com/CC11001100/TaskWatchDog/master/config.json    
+wget https://raw.githubusercontent.com/CC11001100/TaskWatchDog/master/TaskWatchDog.py  
+```
+编译前需要安装相应的依赖：  
+[itchat](https://pypi.python.org/pypi/itchat/1.1.13)  
+[watchdog](https://pypi.python.org/pypi/watchdog/0.8.3)  
+使用pip安装：  
+```
+python3 -m pip install itchat  
+python3 -m pip install watchdog  
+```
+如果没有安装pip，如何安装pip请参考[Installation — pip 9.0.1 documentation](https://pip.pypa.io/en/stable/installing/)  
+修改config.json，将use_shell_qrcode设置为true，如果发现字符二维码过窄就设置为2，启动程序：   
+`python3 TaskWatchDog.py`  
+如果
+扫码登录：  
+![](./img_for_readme/Linux_扫码登录.png)  
+测试功能是否可用：   
+`echo linux:haha >> 1.msg.txt`  
+打开扫码登录的微信，查收消息：  
+![](./img_for_readme/Linux_接收到消息.png)  
+
+如果需要打包的话安装pyinstaller:  
+`python3 -m pip install pyinstaller`  
+然后打包成单文件：  
+`pyinstaller -F TaskWatchDog.py`  
+dist目录下的就是打包好的Linux下的可执行文件啦：  
+![](./img_for_readme/Linux_打包好的dist.png)    
+
+如有问题，发邮件联系我[CC11001100@qq.com](mailto:CC11001100@qq.com)或提Issue。
 
 
 
@@ -33,17 +96,7 @@
 
 
 
-
-
-
-
-#### 2.1 下载安装
-因为是使用python3开发的，所以是跨平台的，但是因为使用到了一些第三方的库（感谢itchat），所以如果只下载源码的话还需要安装对应的依赖库，所以这里提供了三种方式使用：
-#### 2.1.1 下载打包好的Windows可执行文件
-#### 2.1.2 下载打包好的Linux可执行文件
-#### 2.1.3 下载源码自己编译
-
-#### 配置详解
+### 3. 配置详解
 程序运行需要配置文件，使用--config选项指定配置文件的位置：  
 `TaskWatchDog --config ./config.json`  
 如果不指定的话默认会在当前目录下读取名为“./config.json”的配置文件。
@@ -69,18 +122,18 @@
 	"use_shell_qrcode": false
 }
 ```
-NOTE： 上述内容必须全部指定，程序启动的时候会对配置文件合法性进行一个简单的检查，配置错误将导致程序无法启动。
-watch_path: <string>，要监控的目录，当在这个目录下发生创建文件事件时，将触发发送事件。
-notice_filehelper: <boolean>，是否要通知到文件助手，这个在只有一个微信号的时候比较有用。
-notice_friends: <array>，要通知到的好友，是一个数组，数组中的对象使用remark_name来标识好友，当好友的备注匹配此字符串时将会发送给TA，每条消息都会通知到数组中的每一个人。
-remove_old_msg: <boolean>，是否要删除已经读取过的消息，可以节省一些磁盘空间吧。
-message_content_max_length: <number>，微信发送的消息有最大长度限制，好吧其实我也不太常用微信不太熟，so，就交给使用者来掌控吧 ：)
-use_shell_qrcode: <boolean>，微信登录是要扫码的，这在Windows下当然木有问题，但是在Linux下没有GUI时就比较悲剧了，所以在没有GUI的情况下应该将此项设置为true，扫描字符二维码登录。
+NOTE： 上述内容必须全部指定，程序启动的时候会对配置文件合法性进行一个简单的检查，配置错误将导致程序无法启动。  
+watch_path: &lt;string&gt;，要监控的目录，当在这个目录下发生创建文件事件时，将触发发送事件。  
+notice_filehelper: &lt;boolean&gt;，是否要通知到文件助手，这个在只有一个微信号的时候比较有用。  
+notice_friends: &lt;array&gt;，要通知到的好友，是一个数组，数组中的对象使用remark_name来标识好友，当好友的备注匹配此字符串时将会发送给TA，每条消息都会通知到数组中的每一个人。  
+remove_old_msg: &lt;boolean&gt;，是否要删除已经读取过的消息，可以节省一些磁盘空间吧。  
+message_content_max_length: &lt;number&gt;，微信发送的消息有最大长度限制，好吧其实我也不太常用微信不太熟，so，就交给使用者来掌控吧 ：)  
+use_shell_qrcode: &lt;boolean&gt;，微信登录是要扫码的，这在Windows下当然木有问题，但是在Linux下没有GUI时就比较悲剧了，所以在没有GUI的情况下应该将此项设置为true，扫描字符二维码登录。如果将此项设置为true的话，可能会出现字符二维码过窄的情况，这时候将其设置为2即可。  
 
 
-### 新版计划
-1. 加入多种消息格式支持（图片、文件、语音等等）
-2. 更多还没想好，反正估计又是挖坑不填....
+### 4. 新版计划
+- 加入多种消息格式支持（图片、文件、语音等等）  
+- 更多还没想好，反正估计又是挖坑不填....  
 
 
 
