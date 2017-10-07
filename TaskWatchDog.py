@@ -17,6 +17,7 @@ import argparse
 from json import JSONDecodeError
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+from pyexpat import ExpatError
 
 
 class MyFileSystemEventHandler(FileSystemEventHandler):
@@ -108,7 +109,7 @@ class MessageSender:
         except ExpatError as e:
             logging.error('Wei Xin status exception, open "https://wx2.qq.com/" try login for check.')
             sys.exit(-1)
-        except Exception:
+        except Exception as e:
             logging.error(e)
             sys.exit(-1)
 
@@ -172,12 +173,13 @@ class ConfigurationLoader:
         try:
             with open(config_location, encoding='UTF-8') as config_file:
                 config = json.load(config_file)
-                logging.info('read configuration %s is: %s' %(config_location, json.dumps(config)))
+                logging.info('read configuration %s is: \n%s' %(config_location, json.dumps(config, indent=4)))
                 return ConfigurationLoader.check_config(config)
         except FileNotFoundError:
             logging.error('Error: config file is not found, please ensure that file "%s" is exists.' % config_location)
             sys.exit(-1)
-        except JSONDecodeError as e:
+        except JsonDecodeError as e:
+            print(type(e))
             logging.error('Error: config file is not a valid json file, error message is : %s' % e)
             sys.exit(-1)
         except Exception as e:
