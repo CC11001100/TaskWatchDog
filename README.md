@@ -41,7 +41,7 @@
 }
 ```
 将下载的可执行文件和配置文件放到同一个目录，启动程序并扫码登录：  
-![](./img_for_readme/Linux_扫码登录.png)
+![](./img_for_readme/Linux_扫码登录.png)  
 测试程序是否能正常工作：  
 `echo linux:haha >> 1.msg.txt`  
 打开扫码登录的微信，查收消息：  
