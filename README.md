@@ -72,7 +72,6 @@ python3 -m pip install watchdog
 如果没有安装pip，如何安装pip请参考[Installation — pip 9.0.1 documentation](https://pip.pypa.io/en/stable/installing/)  
 修改config.json，将use_shell_qrcode设置为true，如果发现字符二维码过窄就设置为2，启动程序：   
 `python3 TaskWatchDog.py`  
-如果
 扫码登录：  
 ![](./img_for_readme/Linux_扫码登录.png)  
 测试功能是否可用：   
@@ -123,12 +122,12 @@ dist目录下的就是打包好的Linux下的可执行文件啦：
 }
 ```
 NOTE： 上述内容必须全部指定，程序启动的时候会对配置文件合法性进行一个简单的检查，配置错误将导致程序无法启动。  
-watch_path: &lt;string&gt;，要监控的目录，当在这个目录下发生创建文件事件时，将触发发送事件。  
-notice_filehelper: &lt;boolean&gt;，是否要通知到文件助手，这个在只有一个微信号的时候比较有用。  
-notice_friends: &lt;array&gt;，要通知到的好友，是一个数组，数组中的对象使用remark_name来标识好友，当好友的备注匹配此字符串时将会发送给TA，每条消息都会通知到数组中的每一个人。  
-remove_old_msg: &lt;boolean&gt;，是否要删除已经读取过的消息，可以节省一些磁盘空间吧。  
-message_content_max_length: &lt;number&gt;，微信发送的消息有最大长度限制，好吧其实我也不太常用微信不太熟，so，就交给使用者来掌控吧 ：)  
-use_shell_qrcode: &lt;boolean&gt;，微信登录是要扫码的，这在Windows下当然木有问题，但是在Linux下没有GUI时就比较悲剧了，所以在没有GUI的情况下应该将此项设置为true，扫描字符二维码登录。如果将此项设置为true的话，可能会出现字符二维码过窄的情况，这时候将其设置为2即可。  
+**watch_path: &lt;string&gt;** 要监控的目录，当在这个目录下发生创建文件事件时，将触发发送事件。  
+**notice_filehelper: &lt;boolean&gt;** 是否要通知到文件助手，这个在只有一个微信号的时候比较有用。  
+**notice_friends: &lt;array&gt;** 要通知到的好友，是一个数组，数组中的对象使用remark_name来标识好友，当好友的备注匹配此字符串时将会发送给TA，每条消息都会通知到数组中的每一个人。  
+**remove_old_msg: &lt;boolean&gt;** 是否要删除已经读取过的消息，可以节省一些磁盘空间吧。  
+**message_content_max_length: &lt;number&gt;** 微信发送的消息有最大长度限制，好吧其实我也不太常用微信不太熟，so，就交给使用者来掌控吧 ：)  
+**use_shell_qrcode: &lt;boolean&gt;** 微信登录是要扫码的，这在Windows下当然木有问题，但是在Linux下没有GUI时就比较悲剧了，所以在没有GUI的情况下应该将此项设置为true，扫描字符二维码登录。如果将此项设置为true的话，可能会出现字符二维码过窄的情况，这时候将其设置为2即可。  
 
 
 ### 4. 新版计划
