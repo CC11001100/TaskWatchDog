@@ -14,5 +14,5 @@
 	],
 	"remove_old_msg": false,
 	"message_content_max_length": 1024,
-	"use_qrcode": false
+	"use_shell_qrcode": false
 }
